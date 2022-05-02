@@ -1,63 +1,63 @@
 import axios from "axios";
 import React, { useCallback, useState } from "react";
 import { useHistory, useParams } from "react-router";
-import { useEffect } from "react/cjs/react.development";
+import { useEffect } from "react";
 import Button, { OutlineButton } from "../button/button";
 import Input from "../input/Input";
 import MovieCard from "../movie-card/MovieCard";
 import './movie-grid.scss';
 
-const MovieGrid =(props) =>{
+const MovieGrid = (props) => {
 
     const [items, setItems] = useState([]);
     const [page, setPage] = useState(1);
     const [totalPage, setTotalPage] = useState(0);
-    const {keyword, category } = useParams();
+    const { keyword, category } = useParams();
     console.log(keyword);
 
     const getList = async () => {
-            if (keyword === undefined) {
-                const {data} = await axios.get(`https://api.themoviedb.org/3/discover/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&language=ko&sort_by=popularity.desc&include_adult=false&include_video=false&${page}=1&with_watch_monetization_types=flatrate`)
-                console.log(data)
-                setItems(data.results);
-                setTotalPage(data.total_pages);
-            } 
-            else{
-                const {data} = await axios.get(`https://api.themoviedb.org/3/search/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&query=${keyword}`)
-                setItems(data.results);
-                setTotalPage(data.total_pages);
-            }
+        if (keyword === undefined) {
+            const { data } = await axios.get(`https://api.themoviedb.org/3/discover/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&language=ko&sort_by=popularity.desc&include_adult=false&include_video=false&${page}=1&with_watch_monetization_types=flatrate`)
+            console.log(data)
+            setItems(data.results);
+            setTotalPage(data.total_pages);
         }
-    useEffect(()=>{
+        else {
+            const { data } = await axios.get(`https://api.themoviedb.org/3/search/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&query=${keyword}`)
+            setItems(data.results);
+            setTotalPage(data.total_pages);
+        }
+    }
+    useEffect(() => {
         getList();
-    // eslint-disable-next-line
-    },[keyword,category])
-    
-    
-     const loadMore = async () => {
-         if (keyword === undefined) {
-                const {data} = await axios.get(`https://api.themoviedb.org/3/discover/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&language=ko&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page+1}&with_watch_monetization_types=flatrate`)
-                console.log(data)
-                setItems([...items, ...data.results]);
-                setPage(page+1);
-            } 
-            else{
-                const {data} = await axios.get(`https://api.themoviedb.org/3/search/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&query=${keyword}`)
-                setItems(data.results);
-                setTotalPage([...items, ...data.results]);
-            }
-     }
+        // eslint-disable-next-line
+    }, [keyword, category])
+
+
+    const loadMore = async () => {
+        if (keyword === undefined) {
+            const { data } = await axios.get(`https://api.themoviedb.org/3/discover/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&language=ko&sort_by=popularity.desc&include_adult=false&include_video=false&page=${page + 1}&with_watch_monetization_types=flatrate`)
+            console.log(data)
+            setItems([...items, ...data.results]);
+            setPage(page + 1);
+        }
+        else {
+            const { data } = await axios.get(`https://api.themoviedb.org/3/search/${category}?api_key=af43ac72d70dd07b3747f0dc7b4a2680&query=${keyword}`)
+            setItems(data.results);
+            setTotalPage([...items, ...data.results]);
+        }
+    }
 
 
 
-    return(
+    return (
         <>
             <div className="section mb-3">
-                <MovieSearch category={props.category} keyword={keyword}/>
+                <MovieSearch category={props.category} keyword={keyword} />
             </div>
             <div className="movie-grid">
                 {
-                    items.map((item, i) => <MovieCard category={props.category} item={item} key={i}/>)
+                    items.map((item, i) => <MovieCard category={props.category} item={item} key={i} />)
                 }
             </div>
             {
